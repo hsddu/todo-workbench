@@ -1,6 +1,8 @@
 // 主进程：负责控制应用的生命周期，显示原生界面，执行特殊操作并管理渲染器
 const { app, BrowserWindow } = require('electron')
+const startServer = require('./server/bin/www')
 const createWindow = () => {
+    startServer();
     const win = new BrowserWindow({
       width: 800,
       height: 600

@@ -1,9 +1,12 @@
-import styles from './index.less';
+import './index.less';
+import MainMenu from './components/MainMenu';
+import TaskList from './components/TaskList';
 
 export default function IndexPage() {
   return (
-    <div>
-      <h1 className={styles.title}>Page index</h1>
+    <div className="page container">
+      <MainMenu></MainMenu>
+      <TaskList></TaskList>
     </div>
   );
 }

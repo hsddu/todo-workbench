@@ -9,6 +9,9 @@
     cursor: pointer;
     transition: all 0.2s;
     margin-bottom: 10px;
+    .task-item-active {
+        background-color: #1468f4;
+    }
     &:hover {
         box-shadow: 0 0 2px 2px #dddadaad;
     }
@@ -38,6 +41,14 @@
             border: none;
             background-color: #1468f4;
             color: #fff;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .task-item-more-btn {
+            margin-left: 10px;
+            border: none;
+            color: #1468f4;
+            background-color: #dbe3fa;
             border-radius: 10px;
             cursor: pointer;
         }

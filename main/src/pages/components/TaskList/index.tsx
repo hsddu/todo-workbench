@@ -1,12 +1,14 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import './index.less'
 import TaskItem from './components/TaskItem'
-import { DatePicker, Input, Tag, Button } from 'antd';
+import { DatePicker, Input, Tag, Button, Drawer } from 'antd';
 import locale from 'antd/es/date-picker/locale/zh_CN'
 import { PlusIcon } from '@/components/icon/index';
 import moment from 'moment';
+import config from './config'
 
-interface TasksProps {
+interface TaskProps {
+  taskID: string;
   title: string;
   desc: string;
   endTime: moment.Moment;
@@ -16,7 +18,12 @@ export default function TaskList() {
   const [isCreate, setIsCreate] = useState(false);
   const [ddl, setDDL] = useState(moment());
   const [curTitle, setCurTitle] = useState('');
-  const [tasks, setTasks] = useState<TasksProps[]>([]);
+  const [tasks, setTasks] = useState<TaskProps[]>([]);
+  const [activeTaskID, setActiveTaskID] = useState('');
+
+  const activeTask = useMemo(() => {
+    return tasks.find((item) => item.taskID == activeTaskID)
+  }, [tasks, activeTaskID])
 
   const onClickDate = (offset: number) => {
     const today = new Date();
@@ -33,9 +40,17 @@ export default function TaskList() {
     setCurTitle('');
   }
   const onCreateTask = () => {
-    setTasks([...tasks, {title: curTitle, desc: '', endTime: ddl}]);
+    const taskID = Date.now().toString();
+    setTasks([...tasks, {taskID: taskID, title: curTitle, desc: '', endTime: ddl}]);
     setIsCreate(false);
     setCurTitle('');
+  }
+  const onHandleFinish = (task: TaskProps) => {
+    const tasksUnfinish = tasks.filter(item => item.taskID != task.taskID);
+    setTasks([...tasksUnfinish]);
+  }
+  const onHandleDelete = (task: TaskProps) => {
+
   }
   return (
     <div className="task-list">
@@ -54,8 +69,11 @@ export default function TaskList() {
         { isCreate && 
           <div className='time-create-row'>
             <div className='time-tags'>
-              <Tag color='green' onClick={() => onClickDate(0)}>今天</Tag>
-              <Tag color='cyan' onClick={() => onClickDate(1)}>明天</Tag>
+              {
+                config.map( item => {
+                  return <Tag key={item.offset} color={item.color} onClick={() => onClickDate(item.offset)}>{item.title}</Tag>
+                })
+              }
               <DatePicker locale={locale} showTime value={ddl} onChange={onChange} placeholder='选择任务截止日期' size="small"/>
             </div>
             <div>
@@ -67,7 +85,7 @@ export default function TaskList() {
       </div>
       <div className="task-item-container">
         {tasks.map((item, index) => {
-          return <TaskItem key={String(index)} title={item.title} desc={item.desc} startTime="2023-9-28" endTime={item.endTime} status='doing' />
+          return <TaskItem key={String(index)} title={item.title} desc={item.desc} startTime="2023-9-28" endTime={item.endTime} status='doing' active={activeTaskID == item.taskID} onDelete={() => onHandleDelete(item)} onFinish={() => onHandleFinish(item)}/>
         })}
         {/* <TaskItem title="任务一" desc="观看视频" startTime="2023-9-28" endTime='2023-9-28' status='doing' />
         <TaskItem title="任务一" desc="观看视频" startTime="2023-9-28" endTime='2023-9-28' status='doing' />
@@ -85,6 +103,11 @@ export default function TaskList() {
         <TaskItem title="任务一" desc="观看视频" startTime="2023-9-28" endTime='2023-9-28' status='doing' />
         <TaskItem title="任务一" desc="观看视频" startTime="2023-9-28" endTime='2023-9-28' status='doing' /> */}
       </div>
+      <Drawer title={activeTask?.title} placement="right" onClose={() => { setActiveTaskID('')}} open={activeTaskID != ''}>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some Some contents...</p>
+      </Drawer>
     </div>
   )
 }

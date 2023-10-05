@@ -16,6 +16,7 @@
         box-shadow: 0 0 2px 2px #dddadaad;
     }
     &-info {
+        flex: 1;
         display: flex;
         flex-direction: column;
         .task-item-title {
@@ -25,11 +26,7 @@
         .task-item-desc {
             color: #7e7e7e;
         }
-    }
-    &-status {
-        display: flex;
-        flex-direction: column;
-        .task-item-ddl {
+        .task-item-ddl span{
             margin-bottom: 10px;
             background-color: #dbe3fa;
             color: #1468f4;
@@ -37,15 +34,20 @@
             border-radius: 10px;
             font-size: 10px;
         }
+    }
+    &-status {
+        width: 40px;
+        display: flex;
+        flex-direction: column;
         .task-item-finish-btn {
             border: none;
             background-color: #1468f4;
             color: #fff;
             border-radius: 10px;
             cursor: pointer;
+            margin-bottom: 10px;
         }
-        .task-item-more-btn {
-            margin-left: 10px;
+        .task-item-delete-btn {
             border: none;
             color: #1468f4;
             background-color: #dbe3fa;

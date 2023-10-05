@@ -11,20 +11,25 @@ interface IProps {
     active: boolean;
     onFinish: () => void;
     onDelete: () => void;
+    onClick: () => void;
 }
 export default function TaskList(props: IProps) {
-    const { title, desc, startTime, endTime, status, active = false, onDelete, onFinish } = props;
+    const { title, desc, startTime, endTime, status, active = false, onDelete, onFinish, onClick } = props;
     return (
         <div className="task-item ${active ? 'task-item-active' : ''}">
-            <div className="task-item-info">
+            <div className="task-item-info" onClick={onClick}>
                 <div className="task-item-title">{title}</div>
-                <div className="task-item-desc">{desc}</div>
+                {/* <div className="task-item-desc">{desc}</div> */}
+                <div className="task-item-ddl">
+                    <span>截止时间：{endTime.format('YYYY-MM-DD HH:mm:ss')}</span>
+                </div>
             </div>
             <div className="task-item-status">
-                <div className="task-item-ddl">{endTime.format('YYYY-MM-DD HH:mm:ss')}</div>
                 <div>
                     <button className="task-item-finish-btn" onClick={onFinish}>完成</button>
-                    <button className="task-item-more-btn" onClick={onDelete}>删除</button>
+                </div>
+                <div>
+                    <button className="task-item-delete-btn" onClick={onDelete}>删除</button>
                 </div>
             </div>
         </div>

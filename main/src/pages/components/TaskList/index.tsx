@@ -52,6 +52,9 @@ export default function TaskList() {
   const onHandleDelete = (task: TaskProps) => {
 
   }
+  const onHandleClick = (task: TaskProps) => {
+    setActiveTaskID(task.taskID);
+  }
   return (
     <div className="task-list">
       <h1 className='task-list-title'>任务列表</h1>
@@ -85,7 +88,7 @@ export default function TaskList() {
       </div>
       <div className="task-item-container">
         {tasks.map((item, index) => {
-          return <TaskItem key={String(index)} title={item.title} desc={item.desc} startTime="2023-9-28" endTime={item.endTime} status='doing' active={activeTaskID == item.taskID} onDelete={() => onHandleDelete(item)} onFinish={() => onHandleFinish(item)}/>
+          return <TaskItem key={String(index)} title={item.title} desc={item.desc} startTime="2023-9-28" endTime={item.endTime} status='doing' active={activeTaskID == item.taskID} onDelete={() => onHandleDelete(item)} onFinish={() => onHandleFinish(item)} onClick={() => onHandleClick(item)}/>
         })}
         {/* <TaskItem title="任务一" desc="观看视频" startTime="2023-9-28" endTime='2023-9-28' status='doing' />
         <TaskItem title="任务一" desc="观看视频" startTime="2023-9-28" endTime='2023-9-28' status='doing' />

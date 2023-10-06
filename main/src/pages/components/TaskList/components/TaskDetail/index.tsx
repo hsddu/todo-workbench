@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Drawer, Input, Form, Button } from 'antd';
+import { Drawer, Input, Form, Button, message } from 'antd';
 import { TaskProps } from '@/pages/components/TaskList/index'
 import QuickDatePicker from '../QuickDatePicker'
 // import { DatePickerIcon, TextIcon, TitleEditIcon } from '@/components/icon'
@@ -7,17 +7,19 @@ import QuickDatePicker from '../QuickDatePicker'
 interface TaskDetailProps {
     task?: TaskProps;
     onClose: () => void;
+    onSubmit?: (values: TaskProps) => void; 
 }
 const TaskDetail = (props: TaskDetailProps) => {
-    const { task, onClose } = props;
+    const { task, onClose, onSubmit } = props; // task 可能为task对象或undefined
     const [titleValue, setTitleValue] = useState('');
+    const [open, setOpen] = useState(false);
 
     useEffect(() => {
         setTitleValue(task?.title || '');
+        task ? setOpen(true) : setOpen(false);
     }, [task])
     
     const onInputChange = (e: any) => {
-        console.log('++ inputChange:', e?.target.value)
         setTitleValue(e?.target.value)
     }
     const renderTitle = () => {
@@ -29,10 +31,17 @@ const TaskDetail = (props: TaskDetailProps) => {
         )
     }
     const onFormFinish = (values: any) => {
-        console.log('++', values)
+        onSubmit?.({
+            taskID: task?.taskID || '',
+            title: titleValue || '',
+            desc: values.desc || task?.desc,
+            endTime: values.endTime || task?.endTime
+        })
+        message.success('修改成功');
+        onClose()
     }
     return (
-        <Drawer title={renderTitle()} placement="right" onClose={onClose} open={ task?.taskID != undefined} closable={false} width='530'>
+        <Drawer title={renderTitle()} placement="right" onClose={onClose} open={open} closable={false} width='530'>
             <Form onFinish={onFormFinish}>
                 <Form.Item name='desc' label='任务描述'>
                     <Input.TextArea placeholder='请输入任务描述'></Input.TextArea>
@@ -41,7 +50,7 @@ const TaskDetail = (props: TaskDetailProps) => {
                     <QuickDatePicker />
                 </Form.Item>
                 <Form.Item>
-                    <Button type="primary" htmlType="submit" style={{width: '100%'}}>确认修改</Button>
+                    <Button type="primary" htmlType="submit" style={{width: '100%'}} disabled={titleValue == ''}>确认修改</Button>
                 </Form.Item>
             </Form>
         </Drawer>

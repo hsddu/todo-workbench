@@ -1,12 +1,12 @@
 import React, { useState, useMemo } from 'react'
 import './index.less'
 import TaskItem from './components/TaskItem'
-import { DatePicker, Input, Tag, Button, Drawer } from 'antd';
+import { DatePicker, Input, Tag, Button, Drawer, message } from 'antd';
 import locale from 'antd/es/date-picker/locale/zh_CN'
 import { PlusIcon } from '@/components/icon/index';
 import moment from 'moment';
 import config from './config'
-import TaskDetal from './components/TaskDetail'
+import TaskDetail from './components/TaskDetail'
 
 export interface TaskProps {
   taskID: string;
@@ -45,6 +45,7 @@ export default function TaskList() {
     setTasks([...tasks, {taskID: taskID, title: curTitle, desc: '', endTime: ddl}]);
     setIsCreate(false);
     setCurTitle('');
+    message.success('创建成功')
   }
   const onHandleFinish = (task: TaskProps) => {
     const tasksUnfinish = tasks.filter(item => item.taskID != task.taskID);
@@ -55,6 +56,10 @@ export default function TaskList() {
   }
   const onHandleClick = (task: TaskProps) => {
     setActiveTaskID(task.taskID);
+  }
+  const onDetailSubmit = (values: TaskProps) => {
+    const tasksUnChange = tasks.filter(item => item.taskID != values.taskID);
+    setTasks([...tasksUnChange, values])
   }
   return (
     <div className="task-list">
@@ -91,28 +96,8 @@ export default function TaskList() {
         {tasks.map((item, index) => {
           return <TaskItem key={String(index)} title={item.title} desc={item.desc} startTime="2023-9-28" endTime={item.endTime} status='doing' active={activeTaskID == item.taskID} onDelete={() => onHandleDelete(item)} onFinish={() => onHandleFinish(item)} onClick={() => onHandleClick(item)}/>
         })}
-        {/* <TaskItem title="任务一" desc="观看视频" startTime="2023-9-28" endTime='2023-9-28' status='doing' />
-        <TaskItem title="任务一" desc="观看视频" startTime="2023-9-28" endTime='2023-9-28' status='doing' />
-        <TaskItem title="任务一" desc="观看视频" startTime="2023-9-28" endTime='2023-9-28' status='doing' />
-        <TaskItem title="任务一" desc="观看视频" startTime="2023-9-28" endTime='2023-9-28' status='doing' />
-        <TaskItem title="任务一" desc="观看视频" startTime="2023-9-28" endTime='2023-9-28' status='doing' />
-        <TaskItem title="任务一" desc="观看视频" startTime="2023-9-28" endTime='2023-9-28' status='doing' />
-        <TaskItem title="任务一" desc="观看视频" startTime="2023-9-28" endTime='2023-9-28' status='doing' />
-        <TaskItem title="任务一" desc="观看视频" startTime="2023-9-28" endTime='2023-9-28' status='doing' />
-        <TaskItem title="任务一" desc="观看视频" startTime="2023-9-28" endTime='2023-9-28' status='doing' />
-        <TaskItem title="任务一" desc="观看视频" startTime="2023-9-28" endTime='2023-9-28' status='doing' />
-        <TaskItem title="任务一" desc="观看视频" startTime="2023-9-28" endTime='2023-9-28' status='doing' />
-        <TaskItem title="任务一" desc="观看视频" startTime="2023-9-28" endTime='2023-9-28' status='doing' />
-        <TaskItem title="任务一" desc="观看视频" startTime="2023-9-28" endTime='2023-9-28' status='doing' />
-        <TaskItem title="任务一" desc="观看视频" startTime="2023-9-28" endTime='2023-9-28' status='doing' />
-        <TaskItem title="任务一" desc="观看视频" startTime="2023-9-28" endTime='2023-9-28' status='doing' /> */}
       </div>
-      <TaskDetal task={activeTask} onClose={() => { setActiveTaskID('')}}></TaskDetal>
-      {/* <Drawer title={activeTask?.title} placement="right" onClose={() => { setActiveTaskID('')}} open={activeTaskID != ''}>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some Some contents...</p>
-      </Drawer> */}
+      <TaskDetail task={activeTask} onClose={() => { setActiveTaskID('')}} onSubmit={onDetailSubmit}></TaskDetail>
     </div>
   )
 }

@@ -6,8 +6,9 @@ import locale from 'antd/es/date-picker/locale/zh_CN'
 import { PlusIcon } from '@/components/icon/index';
 import moment from 'moment';
 import config from './config'
+import TaskDetal from './components/TaskDetail'
 
-interface TaskProps {
+export interface TaskProps {
   taskID: string;
   title: string;
   desc: string;
@@ -106,11 +107,12 @@ export default function TaskList() {
         <TaskItem title="任务一" desc="观看视频" startTime="2023-9-28" endTime='2023-9-28' status='doing' />
         <TaskItem title="任务一" desc="观看视频" startTime="2023-9-28" endTime='2023-9-28' status='doing' /> */}
       </div>
-      <Drawer title={activeTask?.title} placement="right" onClose={() => { setActiveTaskID('')}} open={activeTaskID != ''}>
+      <TaskDetal task={activeTask} onClose={() => { setActiveTaskID('')}}></TaskDetal>
+      {/* <Drawer title={activeTask?.title} placement="right" onClose={() => { setActiveTaskID('')}} open={activeTaskID != ''}>
         <p>Some contents...</p>
         <p>Some contents...</p>
         <p>Some Some contents...</p>
-      </Drawer>
+      </Drawer> */}
     </div>
   )
 }

@@ -19,6 +19,14 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// 设置跨域响应头
+app.all('*', (req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*'); // 允许所有域进行跨域访问，也可以设置特定的域名
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE'); // 允许的请求方法
+  res.header('Access-Control-Allow-Headers', 'Content-Type'); // 允许的请求头
+  next();
+});
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 

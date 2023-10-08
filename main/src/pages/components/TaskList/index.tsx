@@ -7,6 +7,8 @@ import { PlusIcon } from '@/components/icon/index';
 import moment from 'moment';
 import config from './config'
 import TaskDetail from './components/TaskDetail'
+import apiConfig from '@/api/config'
+import { postApi } from '@/api/index'
 
 export interface TaskProps {
   taskID: string;
@@ -42,10 +44,16 @@ export default function TaskList() {
   }
   const onCreateTask = () => {
     const taskID = Date.now().toString();
-    setTasks([...tasks, {taskID: taskID, title: curTitle, desc: '', endTime: ddl}]);
-    setIsCreate(false);
-    setCurTitle('');
-    message.success('创建成功')
+    const newTask = {taskID: taskID, title: curTitle, desc: '', endTime: ddl}
+    postApi(apiConfig.create.url, newTask).then(res => {
+      console.log('++ 创建', res)
+      setTasks([...tasks, newTask]);
+      setIsCreate(false);
+      setCurTitle('');
+      message.success('创建成功')
+    }).catch(e => {
+      console.log(e);
+    })
   }
   const onHandleFinish = (task: TaskProps) => {
     const tasksUnfinish = tasks.filter(item => item.taskID != task.taskID);

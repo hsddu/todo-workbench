@@ -52,7 +52,8 @@ export default function TaskList() {
     setTasks([...tasksUnfinish]);
   }
   const onHandleDelete = (task: TaskProps) => {
-
+    const taskUnDelete = tasks.filter(item => item.taskID != task.taskID)
+    setTasks([...taskUnDelete]);
   }
   const onHandleClick = (task: TaskProps) => {
     setActiveTaskID(task.taskID);

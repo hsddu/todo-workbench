@@ -1,13 +1,16 @@
+import { DoingIcon, DoneIcon } from "@/components/icon";
 const config = [
     {
         name: '进行中',
         key: 'doing',
         count: 1,
+        icon: () => <DoingIcon />
     },
     {
         name: '已完成',
         key: 'done',
         count: 10,
+        icon: () => <DoneIcon />
     }
 ]
 

@@ -42,3 +42,35 @@ export const TitleEditIcon = () => {
         </svg>
     )
 }
+
+export const DoingIcon = () => {
+    return (
+        <svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 4H40" stroke="#1468f4" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M8 44H40" stroke="#1468f4" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M12 4V16L21 26" stroke="#1468f4" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M36 44V29.5L27 21" stroke="#1468f4" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M12 44V30L18.5 23.5" stroke="#1468f4" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M36 4V16L29.5 23.5" stroke="#1468f4" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M18 33H19" stroke="#1468f4" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M29.1465 32.6465L29.8536 33.3536" stroke="#1468f4" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M24 38H25" stroke="#1468f4" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+    ) 
+}
+
+export const DoneIcon = () => {
+    return (
+        <svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clipPath="url(#icon-55da6c2353e4f38)">
+                <path d="M42 20V39C42 40.6569 40.6569 42 39 42H9C7.34315 42 6 40.6569 6 39V9C6 7.34315 7.34315 6 9 6H30" stroke="#1468f4" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M16 20L26 28L41 7" stroke="#1468f4" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
+            </g>
+            <defs>
+                <clipPath id="icon-55da6c2353e4f38">
+                    <rect width="48" height="48" fill="#1468f4"/>
+                </clipPath>
+            </defs>
+        </svg>
+    )
+}

@@ -33,7 +33,7 @@ router.post('/create', function(req, res, next) {
     if(data){
       newData = JSON.stringify([JSON.parse(data), newTask])
     } else {
-      newData = JSON.stringify(newTask)
+      newData = JSON.stringify([newTask])
     }
     // 写入文件
     fs.writeFile(dbFile, newData, err => {
@@ -55,5 +55,33 @@ router.post('/create', function(req, res, next) {
     });
   });
 });
+
+router.get('/list', function(req, res, next) {
+  const dbPath = path.join(__dirname, '..', 'db')
+  const dbFile = `${dbPath}\\DOING.json`
+  // 读取文件
+  fs.readFile(dbFile, 'utf8', (err, data) => {
+    if (err) {
+      res.send({
+        data: [],
+        code: 0,
+        msg: err
+      });
+      return;
+    }
+    let newData
+    if(data){
+      newData = JSON.parse(data)
+    } else {
+      newData = []
+    }
+    res.send({
+      data: newData,
+      code: 1,
+      msg: 'file written successfully'
+    });
+    return
+  });
+})
 
 module.exports = router;

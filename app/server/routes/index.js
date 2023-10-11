@@ -12,7 +12,7 @@ router.post('/create', function(req, res, next) {
   // __dirname: C:\program\todo-workbench\app\server\routes
   // path.join(__dirname, '..') C:\program\todo-workbench\app\server
   const dbPath = path.join(__dirname, '..', 'db')
-  const newTask = req.body
+  const newTask = req.body // 传入的是对象
   const dbFile = `${dbPath}\\DOING.json`
   
   // 读取文件
@@ -31,7 +31,7 @@ router.post('/create', function(req, res, next) {
     let newData = null;
     // 注意JSON字符串和对象格式
     if(data){
-      newData = JSON.stringify([JSON.parse(data), newTask])
+      newData = JSON.stringify([...JSON.parse(data), newTask])
     } else {
       newData = JSON.stringify([newTask])
     }

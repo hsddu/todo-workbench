@@ -29,7 +29,6 @@ export default function TaskList() {
     api(apiConfig.list.url).then(res => {
       if(res.code == API_RESULT.SUCCESS) {
         // 打印接口响应数据
-        console.log('++ result:', res.data)
         const handleTasks = res.data.map((item:any) => {
           item.endTime = moment(item?.endTime)
           return item
@@ -67,7 +66,7 @@ export default function TaskList() {
     const newTask = {taskID: taskID, title: curTitle, desc: '', endTime: ddl}
     postApi(apiConfig.create.url, newTask).then(res => {
       console.log('++ 创建', res)
-      setTasks([...tasks, newTask]);
+      getLatestList()
       setIsCreate(false);
       setCurTitle('');
       message.success('创建成功')

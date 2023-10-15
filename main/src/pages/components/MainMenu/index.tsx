@@ -1,10 +1,14 @@
-import React, { useState } from 'react'
+import React, { FC, useState } from 'react'
 import './index.less';
 import MenuItem from './components/MenuItem'
 import config from './components/MenuItem/config';
 
-export default function MainMenu() {
-  const [activeKey, setActiveKey] = useState('doing');
+interface MainMenuProps {
+  activeMenuKey: number;
+  onMenuKeyChange: (menu: number) => void
+}
+
+const MainMenu: FC<MainMenuProps> = ({activeMenuKey, onMenuKeyChange}) => {
   return (
     <div className='main-menu'>
       <h1 className='main-title'>主菜单</h1>
@@ -12,10 +16,10 @@ export default function MainMenu() {
         config.map(item => (
           <MenuItem 
             name={item.name}
-            active={activeKey == item.key}
+            active={activeMenuKey == item.key}
             key={item.key} 
             count={item.count} 
-            onClick={() => setActiveKey(item.key)} 
+            onClick={() => onMenuKeyChange(item.key)} 
             icon={item.icon}
           />
         ))
@@ -23,3 +27,5 @@ export default function MainMenu() {
     </div>
   )
 }
+
+export default MainMenu; 

@@ -226,8 +226,9 @@ router.post('/update', function(req, res, next) {
 
 // 查询接口
 router.get('/list', function(req, res, next) {
+  const activeMenuKey =  req.query.activeMenuKey
   const dbPath = path.join(__dirname, '..', 'db')
-  const dbFile = `${dbPath}\\DOING.json`
+  const dbFile = activeMenuKey == 0 ? `${dbPath}\\DOING.json` : `${dbPath}\\DONE.json` 
   // 读取文件
   fs.readFile(dbFile, 'utf8', (err, data) => {
     if (err) {
@@ -247,7 +248,7 @@ router.get('/list', function(req, res, next) {
     res.send({
       data: newData,
       code: 1,
-      msg: 'file written successfully'
+      msg: 'file read successfully'
     });
     return
   });

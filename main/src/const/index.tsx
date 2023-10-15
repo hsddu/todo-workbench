@@ -7,4 +7,9 @@ const TASK_STATUS = {
     DOING: 0,
     DONE: 1
 }
-export { API_RESULT , TASK_STATUS };
+
+const MENU_KEY = {
+    DOING: 0,
+    DONE: 1
+}
+export { API_RESULT , TASK_STATUS, MENU_KEY };

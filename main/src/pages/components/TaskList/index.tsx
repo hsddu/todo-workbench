@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { FC, useState, useMemo, useEffect } from 'react'
 import './index.less'
 import TaskItem from './components/TaskItem'
 import { DatePicker, Input, Tag, Button, Drawer, message } from 'antd';
@@ -8,7 +8,7 @@ import moment from 'moment';
 import config from './config'
 import TaskDetail from './components/TaskDetail'
 import apiConfig from '@/api/config'
-import { postApi, api } from '@/api/index'
+import { postApi, api, getApi } from '@/api/index'
 import { API_RESULT, TASK_STATUS } from '@/const/index'
 
 export interface TaskProps {
@@ -20,7 +20,10 @@ export interface TaskProps {
   status: number;
 }
 
-export default function TaskList() {
+interface TaskListProps {
+  activeMenuKey: number
+}
+const TaskList: FC<TaskListProps> = ({activeMenuKey}) => {
   const [isCreate, setIsCreate] = useState(false);
   const [ddl, setDDL] = useState(moment());
   const [curTitle, setCurTitle] = useState('');
@@ -28,7 +31,7 @@ export default function TaskList() {
   const [activeTaskID, setActiveTaskID] = useState('');
 
   const getLatestList = () => {
-    api(apiConfig.list.url).then(res => {
+    getApi(apiConfig.list.url, {activeMenuKey: activeMenuKey}).then(res => {
       if(res.code == API_RESULT.SUCCESS) {
         // 打印接口响应数据
         const handleTasks = res.data.map((item:any) => {
@@ -43,7 +46,7 @@ export default function TaskList() {
   // 获取列表数据
   useEffect(() => {
     getLatestList()
-  }, [])
+  }, [activeMenuKey])
 
   const activeTask = useMemo(() => {
     return tasks.find((item) => item.taskID == activeTaskID)
@@ -150,3 +153,5 @@ export default function TaskList() {
     </div>
   )
 }
+
+export default TaskList;

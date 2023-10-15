@@ -9,13 +9,15 @@ import config from './config'
 import TaskDetail from './components/TaskDetail'
 import apiConfig from '@/api/config'
 import { postApi, api } from '@/api/index'
-import API_RESULT from '@/const/index'
+import { API_RESULT, TASK_STATUS } from '@/const/index'
 
 export interface TaskProps {
   taskID: string;
   title: string;
   desc: string;
+  startTime: moment.Moment;
   endTime: moment.Moment;
+  status: number;
 }
 
 export default function TaskList() {
@@ -63,7 +65,7 @@ export default function TaskList() {
   }
   const onCreateTask = () => {
     const taskID = Date.now().toString();
-    const newTask = {taskID: taskID, title: curTitle, desc: '', endTime: ddl}
+    const newTask = {taskID: taskID, title: curTitle, desc: '', startime: moment(), endTime: ddl, status: 0}
     postApi(apiConfig.create.url, newTask).then(res => {
       getLatestList()
       setIsCreate(false);
@@ -73,9 +75,17 @@ export default function TaskList() {
       message.error(e);
     })
   }
+  // 完成
   const onHandleFinish = (task: TaskProps) => {
-    const tasksUnfinish = tasks.filter(item => item.taskID != task.taskID);
-    setTasks([...tasksUnfinish]);
+    task.status = TASK_STATUS.DONE;
+    postApi(apiConfig.update.url, task).then(res => {
+      if(res.code == API_RESULT.SUCCESS){
+        message.success('修改成功')
+        getLatestList();
+      } else {
+        message.error(res?.msg)
+      }
+    })
   }
   const onHandleDelete = (task: TaskProps) => {
     postApi(apiConfig.delete.url, {taskID: task.taskID}).then(res => {
@@ -91,8 +101,14 @@ export default function TaskList() {
     setActiveTaskID(task.taskID);
   }
   const onDetailSubmit = (values: TaskProps) => {
-    const tasksUnChange = tasks.filter(item => item.taskID != values.taskID);
-    setTasks([...tasksUnChange, values])
+    postApi(apiConfig.update.url, values).then(res => {
+      if(res.code == API_RESULT.SUCCESS){
+        message.success('修改成功')
+        getLatestList();
+      } else {
+        message.error(res?.msg)
+      }
+    })
   }
   return (
     <div className="task-list">

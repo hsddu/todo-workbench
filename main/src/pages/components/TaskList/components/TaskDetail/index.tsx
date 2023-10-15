@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Drawer, Input, Form, Button, message } from 'antd';
 import { TaskProps } from '@/pages/components/TaskList/index'
 import QuickDatePicker from '../QuickDatePicker'
+import moment from 'moment';
 // import { DatePickerIcon, TextIcon, TitleEditIcon } from '@/components/icon'
 
 interface TaskDetailProps {
@@ -13,10 +14,12 @@ const TaskDetail = (props: TaskDetailProps) => {
     const { task, onClose, onSubmit } = props; // task 可能为task对象或undefined
     const [titleValue, setTitleValue] = useState('');
     const [open, setOpen] = useState(false);
+    const [activeTask, setActivaTask] = useState<TaskProps | undefined>()
 
     useEffect(() => {
         setTitleValue(task?.title || '');
         task ? setOpen(true) : setOpen(false);
+        setActivaTask(task)
     }, [task])
     
     const onInputChange = (e: any) => {
@@ -32,12 +35,13 @@ const TaskDetail = (props: TaskDetailProps) => {
     }
     const onFormFinish = (values: any) => {
         onSubmit?.({
-            taskID: task?.taskID || '',
+            taskID: activeTask?.taskID || '',
             title: titleValue || '',
-            desc: values.desc || task?.desc,
-            endTime: values.endTime || task?.endTime
+            desc: values.desc || activeTask?.desc,
+            startTime: moment(activeTask?.startTime) || values.startTime,
+            endTime: values.endTime || activeTask?.endTime,
+            status: values.status || activeTask?.status
         })
-        message.success('修改成功');
         onClose()
     }
     return (

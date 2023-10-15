@@ -2,4 +2,9 @@ const API_RESULT = {
     SUCCESS: 1,
     FAIL: 0
 }
-export default API_RESULT;
+
+const TASK_STATUS = {
+    DOING: 0,
+    DONE: 1
+}
+export { API_RESULT , TASK_STATUS };

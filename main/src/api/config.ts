@@ -7,6 +7,9 @@ const apiConfig = {
     },
     delete: {
         url: '/delete'
+    },
+    update: {
+        url: '/update'
     }
 }
 export default apiConfig;

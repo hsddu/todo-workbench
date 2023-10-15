@@ -65,13 +65,12 @@ export default function TaskList() {
     const taskID = Date.now().toString();
     const newTask = {taskID: taskID, title: curTitle, desc: '', endTime: ddl}
     postApi(apiConfig.create.url, newTask).then(res => {
-      console.log('++ 创建', res)
       getLatestList()
       setIsCreate(false);
       setCurTitle('');
       message.success('创建成功')
     }).catch(e => {
-      console.log(e);
+      message.error(e);
     })
   }
   const onHandleFinish = (task: TaskProps) => {
@@ -79,8 +78,14 @@ export default function TaskList() {
     setTasks([...tasksUnfinish]);
   }
   const onHandleDelete = (task: TaskProps) => {
-    const taskUnDelete = tasks.filter(item => item.taskID != task.taskID)
-    setTasks([...taskUnDelete]);
+    postApi(apiConfig.delete.url, {taskID: task.taskID}).then(res => {
+      if(res.code == API_RESULT.SUCCESS){
+        message.success('删除成功')
+        getLatestList();
+      } else {
+        message.error(res?.msg)
+      }
+    })
   }
   const onHandleClick = (task: TaskProps) => {
     setActiveTaskID(task.taskID);

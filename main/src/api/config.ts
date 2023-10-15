@@ -4,6 +4,9 @@ const apiConfig = {
     },
     list: {
         url: '/list'
+    },
+    delete: {
+        url: '/delete'
     }
 }
 export default apiConfig;

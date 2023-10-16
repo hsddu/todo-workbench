@@ -28,7 +28,7 @@ const TaskList: FC<TaskListProps> = ({activeMenuKey}) => {
   const [ddl, setDDL] = useState(moment());
   const [curTitle, setCurTitle] = useState('');
   const [tasks, setTasks] = useState<TaskProps[]>([]);
-  const [activeTaskID, setActiveTaskID] = useState('');
+  const [activeTask, setActiveTask] = useState<TaskProps | undefined>();
 
   const getLatestList = () => {
     getApi(apiConfig.list.url, {activeMenuKey: activeMenuKey}).then(res => {
@@ -48,9 +48,6 @@ const TaskList: FC<TaskListProps> = ({activeMenuKey}) => {
     getLatestList()
   }, [activeMenuKey])
 
-  const activeTask = useMemo(() => {
-    return tasks.find((item) => item.taskID == activeTaskID)
-  }, [tasks, activeTaskID])
 
   const onClickDate = (offset: number) => {
     const today = new Date();
@@ -101,7 +98,7 @@ const TaskList: FC<TaskListProps> = ({activeMenuKey}) => {
     })
   }
   const onHandleClick = (task: TaskProps) => {
-    setActiveTaskID(task.taskID);
+    setActiveTask(task)
   }
   const onDetailSubmit = (values: TaskProps) => {
     postApi(apiConfig.update.url, values).then(res => {
@@ -146,12 +143,12 @@ const TaskList: FC<TaskListProps> = ({activeMenuKey}) => {
       </div>
       <div className="task-item-container">
         {tasks.map((item, index) => {
-          return <TaskItem key={String(index)} title={item.title} desc={item.desc} startTime="2023-9-28" endTime={item.endTime} status='doing' active={activeTaskID == item.taskID} onDelete={() => onHandleDelete(item)} onFinish={() => onHandleFinish(item)} onClick={() => onHandleClick(item)}/>
+          return <TaskItem key={String(index)} title={item.title} desc={item.desc} startTime="2023-9-28" endTime={item.endTime} status='doing' active={activeTask?.taskID == item.taskID} onDelete={() => onHandleDelete(item)} onFinish={() => onHandleFinish(item)} onClick={() => onHandleClick(item)}/>
         })}
       </div>
-      <TaskDetail task={activeTask} onClose={() => { setActiveTaskID('')}} onSubmit={onDetailSubmit}></TaskDetail>
+      <TaskDetail task={activeTask} onClose={() => setActiveTask(undefined)} onSubmit={onDetailSubmit}></TaskDetail>
     </div>
   )
 }
 
-export default TaskList;
+export default TaskList

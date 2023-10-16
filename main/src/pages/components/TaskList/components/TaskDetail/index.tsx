@@ -14,12 +14,10 @@ const TaskDetail = (props: TaskDetailProps) => {
     const { task, onClose, onSubmit } = props; // task 可能为task对象或undefined
     const [titleValue, setTitleValue] = useState('');
     const [open, setOpen] = useState(false);
-    const [activeTask, setActivaTask] = useState<TaskProps | undefined>()
 
     useEffect(() => {
         setTitleValue(task?.title || '');
         task ? setOpen(true) : setOpen(false);
-        setActivaTask(task)
     }, [task])
     
     const onInputChange = (e: any) => {
@@ -34,19 +32,20 @@ const TaskDetail = (props: TaskDetailProps) => {
         )
     }
     const onFormFinish = (values: any) => {
+        console.log('++ values:', values, task)
         onSubmit?.({
-            taskID: activeTask?.taskID || '',
-            title: titleValue || '',
-            desc: values.desc || activeTask?.desc,
-            startTime: moment(activeTask?.startTime) || values.startTime,
-            endTime: values.endTime || activeTask?.endTime,
-            status: values.status || activeTask?.status
+            taskID: task?.taskID || '',
+            title: task?.title || '',
+            desc: values.desc,
+            startTime: task?.startTime || moment(),
+            endTime: values.endTime || task?.endTime,
+            status: task?.status || 0
         })
         onClose()
     }
     return (
         <Drawer title={renderTitle()} placement="right" onClose={onClose} open={open} closable={false} width='530'>
-            <Form onFinish={onFormFinish}>
+            <Form onFinish={onFormFinish} initialValues={{endTime: task?.endTime}}>
                 <Form.Item name='desc' label='任务描述'>
                     <Input.TextArea placeholder='请输入任务描述'></Input.TextArea>
                 </Form.Item>

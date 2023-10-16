@@ -45,7 +45,7 @@ const TaskDetail = (props: TaskDetailProps) => {
     }
     return (
         <Drawer title={renderTitle()} placement="right" onClose={onClose} open={open} closable={false} width='530'>
-            <Form onFinish={onFormFinish} initialValues={{endTime: task?.endTime}}>
+            <Form onFinish={onFormFinish} initialValues={{desc:task?.desc, endTime: task?.endTime}}>
                 <Form.Item name='desc' label='任务描述'>
                     <Input.TextArea placeholder='请输入任务描述'></Input.TextArea>
                 </Form.Item>

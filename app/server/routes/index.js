@@ -60,6 +60,7 @@ router.post('/create', function(req, res, next) {
 // 删除接口
 router.post('/delete', function(req, res, next) {
   const taskID = req.body.taskID // 传入的是对象
+  const status = req.body.status
   if(!taskID){
     res.send({
       data: [],
@@ -72,7 +73,7 @@ router.post('/delete', function(req, res, next) {
   // __dirname: C:\program\todo-workbench\app\server\routes
   // path.join(__dirname, '..') C:\program\todo-workbench\app\server
   const dbPath = path.join(__dirname, '..', 'db')
-  const dbFile = `${dbPath}\\DOING.json`
+  const dbFile = status==0 ? `${dbPath}\\DOING.json` : `${dbPath}\\DONE.json`
   
   // 读取文件
   fs.readFile(dbFile, 'utf8', (err, data) => {

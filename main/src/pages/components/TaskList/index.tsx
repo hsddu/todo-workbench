@@ -88,7 +88,7 @@ const TaskList: FC<TaskListProps> = ({activeMenuKey}) => {
     })
   }
   const onHandleDelete = (task: TaskProps) => {
-    postApi(apiConfig.delete.url, {taskID: task.taskID}).then(res => {
+    postApi(apiConfig.delete.url, {taskID: task.taskID, status: task.status}).then(res => {
       if(res.code == API_RESULT.SUCCESS){
         message.success('删除成功')
         getLatestList();

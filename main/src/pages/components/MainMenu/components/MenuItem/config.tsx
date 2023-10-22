@@ -4,13 +4,13 @@ const config = [
     {
         name: '进行中',
         key: MENU_KEY.DOING,
-        count: 1,
+        countKey: 'doing',
         icon: () => <DoingIcon />
     },
     {
         name: '已完成',
         key: MENU_KEY.DONE,
-        count: 10,
+        countKey: 'done',
         icon: () => <DoneIcon />
     }
 ]

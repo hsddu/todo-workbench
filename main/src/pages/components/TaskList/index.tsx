@@ -20,9 +20,10 @@ export interface TaskProps {
 }
 
 interface TaskListProps {
-  activeMenuKey: number
+  activeMenuKey: number;
+  onCountChange: () => void
 }
-const TaskList: FC<TaskListProps> = ({activeMenuKey}) => {
+const TaskList: FC<TaskListProps> = ({activeMenuKey, onCountChange}) => {
   const [tasks, setTasks] = useState<TaskProps[]>([]);
   const [activeTask, setActiveTask] = useState<TaskProps | undefined>();
 
@@ -44,6 +45,9 @@ const TaskList: FC<TaskListProps> = ({activeMenuKey}) => {
     getLatestList()
   }, [activeMenuKey])
 
+  useEffect(() => {
+    onCountChange()
+  },[tasks])
 
   // 完成或继续
   const onHandleFinish = (task: TaskProps) => {

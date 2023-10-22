@@ -10,6 +10,9 @@ const apiConfig = {
     },
     update: {
         url: '/update'
+    },
+    count: {
+        url: '/count'
     }
 }
 export default apiConfig;

@@ -235,4 +235,40 @@ router.get('/list', function(req, res, next) {
   });
 })
 
+// 数量接口
+router.get('/count', function(req, res, next) {
+  const dbPath = path.join(__dirname, '..', 'db')
+  const dbFileList = [`${dbPath}\\DOING.json`, `${dbPath}\\DONE.json`] 
+  const result = {};
+  // 读取文件
+  fs.readFile(dbFileList[0], 'utf8', (err, data) => {
+    if (err) {
+      res.send({
+        data: [],
+        code: 0,
+        msg: err
+      });
+      return;
+    }
+    result["doing"] = JSON.parse(data).length
+    fs.readFile(dbFileList[1], 'utf8', (err, readData) => {
+      if (err) {
+        res.send({
+          data: [],
+          code: 0,
+          msg: err
+        });
+        return;
+      }
+      result["done"] = JSON.parse(readData).length
+      res.send({
+        data: result,
+        code: 1,
+        msg: 'file read successfully'
+      });
+      return
+    })
+  });
+})
+
 module.exports = router;

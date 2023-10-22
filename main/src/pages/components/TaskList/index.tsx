@@ -1,7 +1,7 @@
 import React, { FC, useState, useMemo, useEffect } from 'react'
 import './index.less'
 import TaskItem from './components/TaskItem'
-import { message } from 'antd';
+import { message, Empty } from 'antd';
 import moment from 'moment';
 import TaskDetail from './components/TaskDetail'
 import apiConfig from '@/api/config'
@@ -99,6 +99,7 @@ const TaskList: FC<TaskListProps> = ({activeMenuKey, onCountChange}) => {
         {tasks.map((item, index) => {
           return <TaskItem key={String(index)} title={item.title} desc={item.desc} startTime="2023-9-28" endTime={item.endTime} status={item.status} active={activeTask?.taskID == item.taskID} onDelete={() => onHandleDelete(item)} onFinish={() => onHandleFinish(item)} onClick={() => onHandleClick(item)}/>
         })}
+        {tasks.length == 0 && <Empty description={activeMenuKey==MENU_KEY.DOING? "暂无进行中的任务":"已完成任务为空"}/>}
       </div>
       <TaskDetail task={activeTask} onClose={() => setActiveTask(undefined)} onSubmit={onDetailSubmit}></TaskDetail>
     </div>

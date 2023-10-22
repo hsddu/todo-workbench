@@ -45,10 +45,13 @@ const TaskList: FC<TaskListProps> = ({activeMenuKey}) => {
   }, [activeMenuKey])
 
 
-  // 完成
+  // 完成或继续
   const onHandleFinish = (task: TaskProps) => {
-    task.status = TASK_STATUS.DONE;
-    postApi(apiConfig.update.url, task).then(res => {
+    task.status = 1 - task.status
+    postApi(apiConfig.update.url, {
+      task,
+      activeMenuKey: activeMenuKey
+    }).then(res => {
       if(res.code == API_RESULT.SUCCESS){
         message.success('修改成功')
         getLatestList();
@@ -71,7 +74,11 @@ const TaskList: FC<TaskListProps> = ({activeMenuKey}) => {
     setActiveTask(task)
   }
   const onDetailSubmit = (values: TaskProps) => {
-    postApi(apiConfig.update.url, values).then(res => {
+    console.log('++ 编辑 values', values)
+    postApi(apiConfig.update.url, {
+      task: values, 
+      activeMenuKey: activeMenuKey
+    }).then(res => {
       if(res.code == API_RESULT.SUCCESS){
         message.success('修改成功')
         getLatestList();
@@ -86,7 +93,7 @@ const TaskList: FC<TaskListProps> = ({activeMenuKey}) => {
       {activeMenuKey == MENU_KEY.DOING && <TaskCreator getLatestList={getLatestList}/>}
       <div className="task-item-container">
         {tasks.map((item, index) => {
-          return <TaskItem key={String(index)} title={item.title} desc={item.desc} startTime="2023-9-28" endTime={item.endTime} status='doing' active={activeTask?.taskID == item.taskID} onDelete={() => onHandleDelete(item)} onFinish={() => onHandleFinish(item)} onClick={() => onHandleClick(item)}/>
+          return <TaskItem key={String(index)} title={item.title} desc={item.desc} startTime="2023-9-28" endTime={item.endTime} status={item.status} active={activeTask?.taskID == item.taskID} onDelete={() => onHandleDelete(item)} onFinish={() => onHandleFinish(item)} onClick={() => onHandleClick(item)}/>
         })}
       </div>
       <TaskDetail task={activeTask} onClose={() => setActiveTask(undefined)} onSubmit={onDetailSubmit}></TaskDetail>

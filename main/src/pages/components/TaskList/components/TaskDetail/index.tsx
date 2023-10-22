@@ -32,10 +32,10 @@ const TaskDetail = (props: TaskDetailProps) => {
         )
     }
     const onFormFinish = (values: any) => {
-        console.log('++ values:', values, task)
+        console.log('++ 完成 values:', values, task)
         onSubmit?.({
             taskID: task?.taskID || '',
-            title: task?.title || '',
+            title: titleValue || task?.title || '',
             desc: values.desc,
             startTime: task?.startTime || moment(),
             endTime: values.endTime || task?.endTime,

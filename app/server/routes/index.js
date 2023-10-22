@@ -2,6 +2,7 @@ var express = require('express');
 const fs = require('fs');
 const path = require('path')
 var router = express.Router();
+const { updateDBFile } = require('../utils.js');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -70,59 +71,52 @@ router.post('/delete', function(req, res, next) {
     return;
   }
 
-  // __dirname: C:\program\todo-workbench\app\server\routes
-  // path.join(__dirname, '..') C:\program\todo-workbench\app\server
   const dbPath = path.join(__dirname, '..', 'db')
-  const dbFile = status==0 ? `${dbPath}\\DOING.json` : `${dbPath}\\DONE.json`
-  
-  // 读取文件
-  fs.readFile(dbFile, 'utf8', (err, data) => {
-    if (err) {
-      // 返回的响应
+  const dbFile = status==0 ?  `${dbPath}\\DOING.json` : `${dbPath}\\DONE.json`
+  updateDBFile(dbFile, {
+    onReadError: (err) => {
       res.send({
         data: [],
         code: 0,
         msg: err
       });
-      return;
-    }
-
-    // 寻找taskID对应的数据
-    let newDataObj = null;
-    if(data){
-      const dataObj = JSON.parse(data)
-      newDataObj = dataObj.filter(item => item.taskID != taskID)
-    }
-
-    // 新数据（数据格式转换）
-    let newData = newDataObj ? JSON.stringify(newDataObj) : null;
-
-    // 写入文件
-    fs.writeFile(dbFile, newData, err => {
-      if (err) {
+    },
+    onReadOver: (data) => {
+      const removeTarget = data.find(item => item.taskID == taskID)
+      if(!data.length || !removeTarget){
         res.send({
           data: [],
           code: 0,
-          msg: err
-        });
+          msg: "无效任务ID"
+        })
         return;
       }
-      // file written successfully
+      const newData = data.filter(item => item.taskID != taskID)
+      return newData;
+    },
+    onWriteError: (err) => {
       res.send({
-        data: taskID,
-        code: 1,
-        msg: 'delete successfully'
+        data: [],
+        code: 0,
+        msg: err
       });
-      return
-    });
-  });
+    },
+    onWriteOver: () => {
+      res.send({
+        data: [],
+        code: 1,
+        msg: 'write over, success'
+      })
+    }
+  })
 });
 
 // 修改接口
 router.post('/update', function(req, res, next) {
-  const updateTask = req.body;
-  const taskID = req.body.taskID // 传入的是对象
-  const status = updateTask.status;
+  const updateTask = req.body.task;
+  const taskID = updateTask.taskID // 传入的是对象
+  const activeMenuKey = req.body.activeMenuKey
+
   if(!taskID){
     res.send({
       data: [],
@@ -131,98 +125,84 @@ router.post('/update', function(req, res, next) {
     });
     return;
   }
-
-  // __dirname: C:\program\todo-workbench\app\server\routes
-  // path.join(__dirname, '..') C:\program\todo-workbench\app\server
   const dbPath = path.join(__dirname, '..', 'db')
-  const doingFile = `${dbPath}\\DOING.json`
-  const doneFile = `${dbPath}\\DONE.json`
-  let doingData = null; // 待写入 doing.json文件的数据(对象数据)
-  let doneData = null; // 已完成 done.json文件的数据(字符串类型)
-  
-  // 读取doing.json文件 
-  fs.readFile(doingFile, 'utf8', (err, doingDataStr) => {
-    if (err) {
-      // 返回的响应
+  const dbFile = activeMenuKey==0 ?  `${dbPath}\\DOING.json` : `${dbPath}\\DONE.json`
+  updateDBFile(dbFile, {
+    onReadError: (err) => {
       res.send({
         data: [],
         code: 0,
         msg: err
       });
-      return;
-    }
-
-    const doingDataObj = doingDataStr ? JSON.parse(doingDataStr) : null;
-    console.log('++ doingData 2:', doingDataObj)
-    if(status == 0){ // 进行中
-      if(doingDataObj){ // doing.json 存在数据
-        doingData = doingDataObj.map(item => {
-          if(item?.taskID == taskID){
-            item = updateTask
-            return item
-          }
-          return item
-        })
-        console.log('++ doingData 3:', doingData)
-      } else { // doing.json 不存在数据
-        doingData = null;
-      }
-    } else if(status == 1){  // 已完成
-      // 一、done.json文件写入updateTask
-      fs.readFile(doneFile, 'utf8', (err, doneDataStr) => {
-        if (err) {
-          // 返回的响应
-          res.send({
-            data: [],
-            code: 0,
-            msg: err
-          });
-          return;
-        }
-        const doneDataObj = doneDataStr ? JSON.parse(doneDataStr) : [];
-        doneDataObj.push(updateTask)
-        doneData = doneDataObj.length ? JSON.stringify(doneDataObj) : null
-        fs.writeFile(doneFile, doneData, err => {
-          if (err) {
+    },
+    onReadOver: (data) => {
+      const target = data.find(item => item.taskID == taskID)
+      if(target.status == updateTask.status){ // 当前列表项更新
+        Object.assign(target, updateTask)
+        return data
+      } else { // 当前列表项存放在另一个列表中
+        const otherData = data.filter(item => item.taskID != taskID) 
+        const changeData = data.find(item => item.taskID == taskID)
+        Object.assign(target, updateTask)
+        const changeDBFile = updateTask.status==0 ?  `${dbPath}\\DOING.json` : `${dbPath}\\DONE.json`
+        updateDBFile(changeDBFile, {
+          onReadError: (err) => {
             res.send({
               data: [],
               code: 0,
               msg: err
             });
-            return;
+          },
+          onReadOver: (rdData) => {
+            rdData.push(changeData);
+            return rdData
+          },
+          onWriteError: (err) => {
+            res.send({
+              data: [],
+              code: 0,
+              msg: err
+            });
+          },
+          onWriteOver: () => {
           }
-        });
-      })
-      // 二、doing.json文件删除updateTask
-      if (doingDataObj){
-        doingData = doingDataObj.filter(item => item?.taskID != taskID);
-      } else {
-        doingData = null;
+        })
+        return otherData
       }
-    }
 
-    // 写入doing.json文件
-    console.log('++ doingData 1:', doingData)
-    const doingDataStringify = doingData ? JSON.stringify(doingData) : null;
-    
-    fs.writeFile(doingFile, doingDataStringify, err => {
-      if (err) {
+      if(!data.length || !removeTarget){
         res.send({
           data: [],
           code: 0,
-          msg: err
-        });
+          msg: "无效任务ID"
+        })
         return;
       }
-      // file written successfully
+      const newData = data.filter(item => item.taskID != taskID)
+      return newData;
+    },
+    onWriteError: (err) => {
       res.send({
-        data: updateTask,
-        code: 1,
-        msg: 'update successfully'
+        data: [],
+        code: 0,
+        msg: err
       });
-      return
-    });
-  });
+    },
+    onWriteOver: () => {
+      res.send({
+        data: [],
+        code: 1,
+        msg: 'write over, success'
+      })
+    },
+    onWriteOver: () => {
+      res.send({
+        data: [],
+        code: 1,
+        msg: 'write over, success'
+      })   
+    }
+  })
 });
 
 // 查询接口

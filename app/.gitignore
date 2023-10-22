@@ -6,9 +6,11 @@
 /yarn-error.log
 /yarn.lock
 /package-lock.json
+/out
 
 # production
 /dist
+
 
 # misc
 .DS_Store

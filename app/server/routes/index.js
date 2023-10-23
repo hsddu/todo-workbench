@@ -117,6 +117,7 @@ router.post('/update', function(req, res, next) {
   const taskID = updateTask.taskID // 传入的是对象
   const activeMenuKey = req.body.activeMenuKey
 
+  let resData
   if(!taskID){
     res.send({
       data: [],
@@ -137,6 +138,7 @@ router.post('/update', function(req, res, next) {
       });
     },
     onReadOver: (data) => {
+      resData = data;
       const target = data.find(item => item.taskID == taskID)
       if(target.status == updateTask.status){ // 当前列表项更新
         Object.assign(target, updateTask)
@@ -191,7 +193,7 @@ router.post('/update', function(req, res, next) {
     },
     onWriteOver: () => {
       res.send({
-        data: [dbPath, dbPath],
+        data: [dbPath, dbFile, resData],
         code: 1,
         msg: 'write over, success'
       })

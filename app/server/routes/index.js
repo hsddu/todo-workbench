@@ -127,6 +127,7 @@ router.post('/update', function(req, res, next) {
   }
   const dbPath = path.join(__dirname, '..', 'db')
   const dbFile = activeMenuKey==0 ?  `${dbPath}\\DOING.json` : `${dbPath}\\DONE.json`
+  console.log('+++ dbFile:', dbPath, dbFile);
   updateDBFile(dbFile, {
     onReadError: (err) => {
       res.send({

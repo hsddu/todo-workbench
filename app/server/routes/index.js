@@ -191,18 +191,18 @@ router.post('/update', function(req, res, next) {
     },
     onWriteOver: () => {
       res.send({
-        data: [],
+        data: [dbPath, dbPath],
         code: 1,
         msg: 'write over, success'
       })
     },
-    onWriteOver: () => {
-      res.send({
-        data: [],
-        code: 1,
-        msg: 'write over, success'
-      })   
-    }
+    // onWriteOver: () => {
+    //   res.send({
+    //     data: [],
+    //     code: 1,
+    //     msg: 'write over, success'
+    //   })   
+    // }
   })
 });
 

@@ -106,7 +106,7 @@ router.post('/delete', function(req, res, next) {
     },
     onWriteOver: () => {
       res.send({
-        data: [dbFile, c2, JSON.stringify(c2)],
+        data: {dbFile:dbFile, c2: {...c2}, s: JSON.stringify(c2)},
         code: 1,
         msg: 'write over, success delete'
       })

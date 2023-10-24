@@ -60,6 +60,7 @@ router.post('/create', function(req, res, next) {
 
 // 删除接口
 router.post('/delete', function(req, res, next) {
+  let c1, c2;
   const taskID = req.body.taskID // 传入的是对象
   const status = req.body.status
   if(!taskID){
@@ -82,6 +83,7 @@ router.post('/delete', function(req, res, next) {
       });
     },
     onReadOver: (data) => {
+      c1 = data
       const removeTarget = data.find(item => item.taskID == taskID)
       if(!data.length || !removeTarget){
         res.send({
@@ -92,6 +94,7 @@ router.post('/delete', function(req, res, next) {
         return;
       }
       const newData = data.filter(item => item.taskID != taskID)
+      c2 = newData
       return newData;
     },
     onWriteError: (err) => {
@@ -103,9 +106,9 @@ router.post('/delete', function(req, res, next) {
     },
     onWriteOver: () => {
       res.send({
-        data: [],
+        data: [dbFile, JSON.stringify(c2)],
         code: 1,
-        msg: 'write over, success'
+        msg: 'write over, success delete'
       })
     }
   })

@@ -22,11 +22,13 @@
     "electron": "^26.2.2"
   },
   "build": {
+    "asar": false,
     "files": [
       "./index.html",
       "./main.js",
-      "server/**/*"
-    ]
+      "./server/**/*"
+    ],
+    "includeSubNodeModules": true
   },
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0"
